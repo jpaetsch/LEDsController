@@ -102,12 +102,13 @@ public class MainActivity extends AppCompatActivity {
                         switch(externalMessage.charAt(0)) {
                             case 'E':
                                 tvExternalMessage.setTextColor(Color.RED);
+                                tvExternalMessage.setText("Client Message >>>  " + externalMessage);
                                 break;
                             case 'S':
                                 tvExternalMessage.setTextColor(Color.BLACK);
+                                tvExternalMessage.setText("Client Message >>>  " + externalMessage);
                                 break;
                         }
-                        tvExternalMessage.setText("Client Message >>>  " + externalMessage);
                     break;
                 }
             }
