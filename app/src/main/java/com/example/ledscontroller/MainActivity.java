@@ -25,7 +25,7 @@ import java.util.UUID;
 
 import static android.content.ContentValues.TAG;
 
-
+// Good start!
 // Communication protocol:    <------------------------>
 
 
