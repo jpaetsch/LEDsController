@@ -22,6 +22,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 
@@ -327,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
          * @param input the string that will be converted to bytes and written out
         **/
         public void write(String input) {
-            // Convert entered string into bytes and write it out
+            // Convert entered string into bytes using default utf-8 encoding and write it out
             byte[] bytes = input.getBytes();
             try {
                 bluetoothOutStream.write(bytes);
@@ -349,19 +350,27 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Log the external messages received from the microcontroller board - should be either
-         * Status: message OR Error: message strings according to the documentation folder
+         * Status: message
+         * OR
+         * Error: message
+         * In string format according to the documentation folder - logging categorization and
+         * severity will be based on the first character of that string
          * @param received the string that was received and that will be logged
          **/
         private void logExternalMessage(String received) {
-            if(received.charAt(0) == 'E') {
-                Log.e(TAG, "Error message received:");
-                Log.e(TAG_INPUT, received);
-            } else if(received.charAt(0) == 'S') {
-                Log.i(TAG, "Status message received:");
-                Log.i(TAG_INPUT, received);
-            } else {
-                Log.e(TAG, "Unexpected format message received:");
-                Log.w(TAG_INPUT, received);
+            switch(received.charAt(0)) {
+                case 'E':
+                    Log.e(TAG, "Error message received:");
+                    Log.e(TAG_INPUT, received);
+                    break;
+                case 'S':
+                    Log.i(TAG, "Status message received:");
+                    Log.i(TAG_INPUT, received);
+                    break;
+                default:
+                    Log.e(TAG, "Unexpected format message received:");
+                    Log.w(TAG_INPUT, received);
+                    break;
             }
         }
     }

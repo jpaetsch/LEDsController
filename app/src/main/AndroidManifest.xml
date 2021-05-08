@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LEDsController">
-        <activity android:name=".BluetoothDeviceSelectActivity"></activity>
+        <activity android:name=".BluetoothDeviceSelectActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
