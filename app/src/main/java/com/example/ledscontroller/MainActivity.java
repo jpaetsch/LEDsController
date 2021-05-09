@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Retrieve the device name (which cannot be null to set up the bluetooth connection)
         deviceName = getIntent().getStringExtra(KEY_DEVICE_NAME);
+
         if(deviceName != null) {
             // Get address to make the bluetooth connection
             deviceAddress = getIntent().getStringExtra(KEY_DEVICE_ADDY);
@@ -85,9 +86,14 @@ public class MainActivity extends AppCompatActivity {
 
             // Create new thread for bluetooth connection to the selected device
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            threadCreateConnect = new CreateConnectThread(bluetoothAdapter, deviceAddress);
-            threadCreateConnect.start();
-            Log.i(TAG, "Started bluetooth create connection thread");
+            if(bluetoothAdapter == null) { // device doesn't support bluetooth
+                toolBar.setSubtitle("Bluetooth isn't supported on your device");
+                Log.e(TAG, "Bluetooth adapter retrieved is null");
+            } else { // set up new create connection thread using the retrieved adapter
+                threadCreateConnect = new CreateConnectThread(bluetoothAdapter, deviceAddress);
+                threadCreateConnect.start();
+                Log.i(TAG, "Started bluetooth create connection thread");
+            }
         } else {
             Log.e(TAG, "Passed device name is null");
         }
@@ -105,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                                 btnOn.setEnabled(true);
                                 break;
                             case -1: // Device failed to connect
-                                toolBar.setSubtitle("Device fails to connect");
+                                toolBar.setSubtitle("Device failed to connect");
                                 break;
                         }
                         // Either way the following UI updates occur
@@ -169,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Set the back button press behaviour; terminate the bluetooth connection
+     * Set the back button press behaviour; terminate the bluetooth connections and exit app
      **/
     @Override
     public void onBackPressed() {
@@ -177,10 +183,10 @@ public class MainActivity extends AppCompatActivity {
         if(threadCreateConnect != null) {
             threadCreateConnect.cancel();
         }
-        Intent a = new Intent(Intent.ACTION_MAIN);
-        a.addCategory(Intent.CATEGORY_HOME);
-        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(a);
+        if(threadConnected != null) {
+            threadConnected.cancel();
+        }
+        finish();
     }
 
 
@@ -221,7 +227,6 @@ public class MainActivity extends AppCompatActivity {
             // Connect to remote device through socket, block until succeeding throwing an exception
             try {
                 bluetoothSocket.connect();
-                handler.obtainMessage(CONNECTING_STATUS, 1 , -1).sendToTarget();
             } catch(IOException connectException) { // Unable to connect so close the socket/return
                 try {
                     bluetoothSocket.close();
@@ -235,8 +240,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Connection attempt succeeded; new thread for work associated with the connection
-            Log.i(TAG, "Started connected thread for associated bluetooth work");
+            handler.obtainMessage(CONNECTING_STATUS, 1 , -1).sendToTarget();
             threadConnected = new ConnectedThread(bluetoothSocket);
+            Log.i(TAG, "Started connected thread for associated bluetooth work");
             threadConnected.run();
         }
 

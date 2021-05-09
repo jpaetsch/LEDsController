@@ -35,6 +35,9 @@ public class BluetoothDeviceSelectActivity extends AppCompatActivity {
 
         // Set up the default bluetooth adapter
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(bluetoothAdapter == null) {
+
+        }
 
         // Get a list of paired bluetooth devices
         pairedDevices = bluetoothAdapter.getBondedDevices();
