@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Blank instruction constant with delimiters -->
+    <string name="instruction">\u003C------------------------\u003E</string>
+
+    <!-- Pattern ids -->
+    <integer name="id_solid_pattern">0</integer>
+
+</resources>

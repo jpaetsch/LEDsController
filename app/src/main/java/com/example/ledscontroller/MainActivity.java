@@ -16,6 +16,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -56,9 +57,14 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolBar;
     Button btnConnect;
     ProgressBar progressBar;
-    TextView tvExternalMessage;
+    TextView tvFeedback;
+
+    EditText etHueField;
+    EditText etSaturationField;
+    EditText etValueField;
 
     Button btnOff;
+    Button btnHSV;
     Button btnRed;
     Button btnOrange;
     Button btnYellow;
@@ -126,14 +132,14 @@ public class MainActivity extends AppCompatActivity {
                         String externalMessage = msg.obj.toString();
                         switch(externalMessage.charAt(0)) {
                             case 'E':
-                                tvExternalMessage.setTextColor(Color.RED);
+                                tvFeedback.setTextColor(Color.RED);
                                 break;
                             case 'S':
-                                tvExternalMessage.setTextColor(Color.BLACK);
+                                tvFeedback.setTextColor(Color.BLACK);
                                 break;
                         }
                         // Either way the message is displayed
-                        tvExternalMessage.setText(">>>  " + externalMessage);
+                        tvFeedback.setText(">>>  " + externalMessage);
                         break;
                 }
             }
@@ -146,25 +152,87 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // On/Off button listener to turn on and of the led lights
+        // Off button listener to turn the lights off
         btnOff.setOnClickListener(view -> {
-            String instruction = "";
-            String buttonLabel = btnOff.getText().toString();
+            sendInstructionSolidPattern(0, 0, 0);
+            etHueField.setText("0");
+            etSaturationField.setText("0");
+            etValueField.setText("0");
+        });
 
-            switch(buttonLabel) {
-                case "Turn On":
-                    btnOff.setText("Turn Off");
-                    instruction = "<1----------------------->";
-                    break;
-                case "Turn Off":
-                    btnOff.setText("Turn On");
-                    instruction = "<0----------------------->";
-                    break;
+        // Red button listener to turn the lights solid red
+        btnRed.setOnClickListener(view -> {
+            sendInstructionSolidPattern(0, 191, 179);
+            etHueField.setText("0");
+            etSaturationField.setText("191");
+            etValueField.setText("179");
+        });
+
+        // Orange button listener to turn the lights solid orange
+        btnOrange.setOnClickListener(view -> {
+            sendInstructionSolidPattern(28, 191, 235);
+            etHueField.setText("28");
+            etSaturationField.setText("191");
+            etValueField.setText("235");
+        });
+
+        // Yellow button listener to turn the lights solid yellow
+        btnYellow.setOnClickListener(view -> {
+            sendInstructionSolidPattern(43, 168, 246);
+            etHueField.setText("43");
+            etSaturationField.setText("168");
+            etValueField.setText("246");
+        });
+
+        // Green button listener to turn the lights solid green
+        btnGreen.setOnClickListener(view -> {
+            sendInstructionSolidPattern(97, 174, 161);
+            etHueField.setText("97");
+            etSaturationField.setText("174");
+            etValueField.setText("161");
+        });
+
+        // Blue button listener to turn the lights solid blue
+        btnBlue.setOnClickListener(view -> {
+            sendInstructionSolidPattern(155, 145, 235);
+            etHueField.setText("155");
+            etSaturationField.setText("145");
+            etValueField.setText("235");
+        });
+
+        // Purple button listener to turn the lights solid purple
+        btnPurple.setOnClickListener(view -> {
+            sendInstructionSolidPattern(195, 151, 235);
+            etHueField.setText("195");
+            etSaturationField.setText("151");
+            etValueField.setText("235");
+        });
+
+        // Button listener for the manual setting of solid colour, make sure to validate the input
+        // data to ensure it is within bounds and purely numerical, otherwise return an error msg
+        btnHSV.setOnClickListener(view -> {
+            int h = 0;
+            int s = 0;
+            int v = 0;
+
+            try {
+                h = Integer.parseInt(etHueField.getText().toString());
+                s = Integer.parseInt(etHueField.getText().toString());
+                v = Integer.parseInt(etHueField.getText().toString());
+            } catch(NumberFormatException e) {
+                Log.e(TAG, "Error parsing the CSV solid colour value user input", e);
+                h = 0;
+                s = 0;
+                v = 0;
             }
 
-            // Write the instruction to the connected bluetooth thread
-            threadConnected.write(instruction);
+            if(h > 255 || s > 255 || v > 255 || h < 0 || s < 0 || v < 0)    {
+                Log.e(TAG, "Invalid user input for CSV solid colour value");
+            } else {
+                sendInstructionSolidPattern(h, s, v);
+            }
         });
+
     }
 
     /**
@@ -174,14 +242,43 @@ public class MainActivity extends AppCompatActivity {
         btnConnect = findViewById(R.id.btn_connect);
         toolBar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progress_bar);
-        tvExternalMessage = findViewById(R.id.tv_external_message);
+        tvFeedback = findViewById(R.id.tv_user_feedback);
+
+        etHueField = findViewById(R.id.et_hue);
+        etSaturationField = findViewById(R.id.et_saturation);
+        etValueField = findViewById(R.id.et_value);
+
         btnOff = findViewById(R.id.btn_off);
+        btnHSV = findViewById(R.id.btn_hsv);
         btnRed = findViewById(R.id.btn_red);
         btnOrange = findViewById(R.id.btn_orange);
         btnYellow = findViewById(R.id.btn_yellow);
         btnGreen = findViewById(R.id.btn_green);
         btnBlue = findViewById(R.id.btn_blue);
         btnPurple = findViewById(R.id.btn_purple);
+    }
+
+    /**
+     * Builds and sends the solid pattern instruction string that will be expected by the receiver
+     * @param hue the hue of the HSV colour (0 to 255)
+     * @param saturation the saturation of the HSV colour (0 to 255)
+     * @param value the value field of the HSV colour (0 to 255)
+     **/
+    private void sendInstructionSolidPattern(int hue, int saturation, int value) {
+        // ERROR CHECKING
+
+        // Convert each integer to the unsigned byte equivalent value
+        hue = (byte) hue & 0xFF;
+        saturation = (byte) saturation & 0xFF;
+        value = (byte) value & 0xFF;
+
+        char[] modifyInstruction = getResources().getString(R.string.instruction).toCharArray();
+        modifyInstruction[1] = (char) getResources().getInteger(R.integer.id_solid_pattern);
+        modifyInstruction[2] = (char) hue;
+        modifyInstruction[3] = (char) saturation;
+        modifyInstruction[4] = (char) value;
+
+        threadConnected.write(String.valueOf(modifyInstruction));
     }
 
     /**
