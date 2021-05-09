@@ -22,7 +22,6 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 
@@ -58,7 +57,14 @@ public class MainActivity extends AppCompatActivity {
     Button btnConnect;
     ProgressBar progressBar;
     TextView tvExternalMessage;
-    Button btnOn;
+
+    Button btnOff;
+    Button btnRed;
+    Button btnOrange;
+    Button btnYellow;
+    Button btnGreen;
+    Button btnBlue;
+    Button btnPurple;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
         initializeViews();
 
         progressBar.setVisibility(View.GONE);
-        btnOn.setText("Turn On");
-        btnOn.setEnabled(false);
 
         // Retrieve the device name (which cannot be null to set up the bluetooth connection)
         deviceName = getIntent().getStringExtra(KEY_DEVICE_NAME);
@@ -108,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                         switch(msg.arg1) {
                             case 1: // Device successfully connected
                                 toolBar.setSubtitle("Connected to " + deviceName);
-                                btnOn.setEnabled(true);
+                                btnOff.setEnabled(true);
                                 break;
                             case -1: // Device failed to connect
                                 toolBar.setSubtitle("Device failed to connect");
@@ -143,17 +147,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // On/Off button listener to turn on and of the led lights
-        btnOn.setOnClickListener(view -> {
+        btnOff.setOnClickListener(view -> {
             String instruction = "";
-            String buttonLabel = btnOn.getText().toString();
+            String buttonLabel = btnOff.getText().toString();
 
             switch(buttonLabel) {
                 case "Turn On":
-                    btnOn.setText("Turn Off");
+                    btnOff.setText("Turn Off");
                     instruction = "<1----------------------->";
                     break;
                 case "Turn Off":
-                    btnOn.setText("Turn On");
+                    btnOff.setText("Turn On");
                     instruction = "<0----------------------->";
                     break;
             }
@@ -167,11 +171,17 @@ public class MainActivity extends AppCompatActivity {
      * Initialize all the UI elements with their view and starting values
     **/
     private void initializeViews() {
-        btnOn = findViewById(R.id.btn_on);
         btnConnect = findViewById(R.id.btn_connect);
         toolBar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progress_bar);
         tvExternalMessage = findViewById(R.id.tv_external_message);
+        btnOff = findViewById(R.id.btn_off);
+        btnRed = findViewById(R.id.btn_red);
+        btnOrange = findViewById(R.id.btn_orange);
+        btnYellow = findViewById(R.id.btn_yellow);
+        btnGreen = findViewById(R.id.btn_green);
+        btnBlue = findViewById(R.id.btn_blue);
+        btnPurple = findViewById(R.id.btn_purple);
     }
 
     /**

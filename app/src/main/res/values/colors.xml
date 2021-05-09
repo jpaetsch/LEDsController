@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- My created colours - will look into theming, etc. for future app projects -->
+    <color name="gold">#A29938</color>
+
+    <color name="solid_red">#B32D2D</color>
+    <color name="solid_orange">#EBAD3B</color>
+    <color name="solid_yellow">#F6F654</color>
+    <color name="solid_green">#33A151</color>
+    <color name="solid_blue">#6594EB</color>
+    <color name="solid_purple">#B360EB</color>
+
 </resources>
