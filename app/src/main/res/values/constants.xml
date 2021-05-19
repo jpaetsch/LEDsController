@@ -5,6 +5,7 @@
     <string name="instruction">\u003C------------------------\u003E</string>
 
     <!-- Pattern ids -->
-    <integer name="id_solid_pattern">0</integer>
+    <integer name="id_off_pattern">0</integer>
+    <integer name="id_solid_pattern">1</integer>
 
 </resources>

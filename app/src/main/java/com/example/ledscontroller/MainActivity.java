@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Off button listener to turn the lights off
         btnOff.setOnClickListener(view -> {
-            sendInstructionSolidPattern(0, 0, 0);
+            sendInstructionOffPattern();
             etHueField.setText("0");
             etSaturationField.setText("0");
             etValueField.setText("0");
@@ -232,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
                 sendInstructionSolidPattern(h, s, v);
             }
         });
-
     }
 
     /**
@@ -280,6 +279,20 @@ public class MainActivity extends AppCompatActivity {
 
         threadConnected.write(String.valueOf(modifyInstruction));
     }
+
+
+    /**
+     * Builds and sends the off pattern instruction string that will be expected by the receiver
+     **/
+    private void sendInstructionOffPattern() {
+        // ERROR CHECKING
+
+        char[] modifyInstruction = getResources().getString(R.string.instruction).toCharArray();
+        modifyInstruction[1] = (char) getResources().getInteger(R.integer.id_off_pattern);
+
+        threadConnected.write(String.valueOf(modifyInstruction));
+    }
+
 
     /**
      * Set the back button press behaviour; terminate the bluetooth connections and exit app
