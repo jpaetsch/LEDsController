@@ -2,8 +2,8 @@
     <string name="app_name">LEDsController</string>
     <string name="lbl_btn_connect">Connect</string>
     <string name="default_hsv_value">0</string>
-    <string name="hnt_hsv_enter_hue">Field to enter the HSV hue (from 0 to 255)</string>
-    <string name="hnt_hsv_enter_saturation">Field to enter the HSV saturation (from 0 to 255)</string>
-    <string name="hnt_hsv_enter_value">Field to enter the HSV value (from 0 to 255)</string>
+    <string name="hnt_hsv_enter_hue">Field to enter the HSV hue</string>
+    <string name="hnt_hsv_enter_saturation">Field to enter the HSV saturation</string>
+    <string name="hnt_hsv_enter_value">Field to enter the HSV value</string>
     <string name="lbl_btn_off">Turn Off</string>
 </resources>

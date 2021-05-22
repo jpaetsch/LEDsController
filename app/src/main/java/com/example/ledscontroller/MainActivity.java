@@ -23,6 +23,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 
@@ -80,6 +81,15 @@ public class MainActivity extends AppCompatActivity {
         // Initialize UI elements and set their initial values
         initializeViews();
 
+        btnOff.setEnabled(false);
+        btnHSV.setEnabled(false);
+        btnRed.setEnabled(false);
+        btnOrange.setEnabled(false);
+        btnYellow.setEnabled(false);
+        btnGreen.setEnabled(false);
+        btnBlue.setEnabled(false);
+        btnPurple.setEnabled(false);
+
         progressBar.setVisibility(View.GONE);
 
         // Retrieve the device name (which cannot be null to set up the bluetooth connection)
@@ -103,6 +113,14 @@ public class MainActivity extends AppCompatActivity {
                 threadCreateConnect = new CreateConnectThread(bluetoothAdapter, deviceAddress);
                 threadCreateConnect.start();
                 Log.i(TAG, "Started bluetooth create connection thread");
+                btnOff.setEnabled(true);
+                btnHSV.setEnabled(true);
+                btnRed.setEnabled(true);
+                btnOrange.setEnabled(true);
+                btnYellow.setEnabled(true);
+                btnGreen.setEnabled(true);
+                btnBlue.setEnabled(true);
+                btnPurple.setEnabled(true);
             }
         } else {
             Log.e(TAG, "Passed device name is null");
@@ -162,63 +180,63 @@ public class MainActivity extends AppCompatActivity {
 
         // Red button listener to turn the lights solid red
         btnRed.setOnClickListener(view -> {
-            sendInstructionSolidPattern(0, 191, 179);
+            sendInstructionSolidPattern(0, 255, 150);
             etHueField.setText("0");
-            etSaturationField.setText("191");
-            etValueField.setText("179");
+            etSaturationField.setText("255");
+            etValueField.setText("150");
         });
 
         // Orange button listener to turn the lights solid orange
         btnOrange.setOnClickListener(view -> {
-            sendInstructionSolidPattern(28, 191, 235);
-            etHueField.setText("28");
-            etSaturationField.setText("191");
-            etValueField.setText("235");
+            sendInstructionSolidPattern(15, 255, 150);
+            etHueField.setText("15");
+            etSaturationField.setText("255");
+            etValueField.setText("150");
         });
 
         // Yellow button listener to turn the lights solid yellow
         btnYellow.setOnClickListener(view -> {
-            sendInstructionSolidPattern(43, 168, 246);
-            etHueField.setText("43");
-            etSaturationField.setText("168");
-            etValueField.setText("246");
+            sendInstructionSolidPattern(40, 230, 150);
+            etHueField.setText("40");
+            etSaturationField.setText("230");
+            etValueField.setText("150");
         });
 
         // Green button listener to turn the lights solid green
         btnGreen.setOnClickListener(view -> {
-            sendInstructionSolidPattern(97, 174, 161);
+            sendInstructionSolidPattern(97, 255, 150);
             etHueField.setText("97");
-            etSaturationField.setText("174");
-            etValueField.setText("161");
+            etSaturationField.setText("255");
+            etValueField.setText("150");
         });
 
         // Blue button listener to turn the lights solid blue
         btnBlue.setOnClickListener(view -> {
-            sendInstructionSolidPattern(155, 145, 235);
-            etHueField.setText("155");
-            etSaturationField.setText("145");
-            etValueField.setText("235");
+            sendInstructionSolidPattern(160, 255, 150);
+            etHueField.setText("160");
+            etSaturationField.setText("255");
+            etValueField.setText("150");
         });
 
         // Purple button listener to turn the lights solid purple
         btnPurple.setOnClickListener(view -> {
-            sendInstructionSolidPattern(195, 151, 235);
-            etHueField.setText("195");
-            etSaturationField.setText("151");
-            etValueField.setText("235");
+            sendInstructionSolidPattern(194, 255, 150);
+            etHueField.setText("194");
+            etSaturationField.setText("255");
+            etValueField.setText("150");
         });
 
         // Button listener for the manual setting of solid colour, make sure to validate the input
         // data to ensure it is within bounds and purely numerical, otherwise return an error msg
         btnHSV.setOnClickListener(view -> {
-            int h = 0;
-            int s = 0;
-            int v = 0;
+            int h;
+            int s;
+            int v;
 
             try {
                 h = Integer.parseInt(etHueField.getText().toString());
-                s = Integer.parseInt(etHueField.getText().toString());
-                v = Integer.parseInt(etHueField.getText().toString());
+                s = Integer.parseInt(etSaturationField.getText().toString());
+                v = Integer.parseInt(etValueField.getText().toString());
             } catch(NumberFormatException e) {
                 Log.e(TAG, "Error parsing the CSV solid colour value user input", e);
                 h = 0;
@@ -228,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
             if(h > 255 || s > 255 || v > 255 || h < 0 || s < 0 || v < 0)    {
                 Log.e(TAG, "Invalid user input for CSV solid colour value");
+                tvFeedback.setText("Invalid input, values must be in the range 0 to 255");
             } else {
                 sendInstructionSolidPattern(h, s, v);
             }
@@ -266,16 +285,19 @@ public class MainActivity extends AppCompatActivity {
     private void sendInstructionSolidPattern(int hue, int saturation, int value) {
         // ERROR CHECKING
 
-        // Convert each integer to the unsigned byte equivalent value
-        hue = (byte) hue & 0xFF;
-        saturation = (byte) saturation & 0xFF;
-        value = (byte) value & 0xFF;
-
         char[] modifyInstruction = getResources().getString(R.string.instruction).toCharArray();
         modifyInstruction[1] = (char) getResources().getInteger(R.integer.id_solid_pattern);
         modifyInstruction[2] = (char) hue;
         modifyInstruction[3] = (char) saturation;
         modifyInstruction[4] = (char) value;
+
+        Log.w("SENDING", String.valueOf(modifyInstruction));
+
+//        char[] modifyInstruction = getResources().getString(R.string.instruction).toCharArray();
+//        modifyInstruction[1] = (char) ((byte) (getResources().getInteger(R.integer.id_solid_pattern)));  // NOTE: normal cast was adding
+//        modifyInstruction[2] = h;
+//        modifyInstruction[3] = s;
+//        modifyInstruction[4] = v;
 
         threadConnected.write(String.valueOf(modifyInstruction));
     }
@@ -454,8 +476,8 @@ public class MainActivity extends AppCompatActivity {
          * @param input the string that will be converted to bytes and written out
         **/
         public void write(String input) {
-            // Convert entered string into bytes using default utf-8 encoding and write it out
-            byte[] bytes = input.getBytes();
+            // Convert entered string into bytes using special encoding and write it out
+            byte[] bytes = input.getBytes(StandardCharsets.ISO_8859_1);
             try {
                 bluetoothOutStream.write(bytes);
             } catch(IOException e) {

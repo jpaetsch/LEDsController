@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Blank instruction constant with delimiters -->
-    <string name="instruction">\u003C------------------------\u003E</string>
+    <string name="instruction">&lt;------------------------&gt;</string>
 
     <!-- Pattern ids -->
     <integer name="id_off_pattern">0</integer>
