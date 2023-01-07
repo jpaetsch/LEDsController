@@ -36,7 +36,7 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
     // Tag strings that will be used for error or status messages associated with this activity
     // on either the app or board side
-    private static final String TAG = "MyActivity";
+    private final String TAG = Constants.TAG_MAIN_ACTIVITY;
 
     // Key strings linked to the bluetooth device selection activity
     private static final String KEY_DEVICE_NAME = "deviceName";
@@ -285,8 +285,8 @@ public class MainActivity extends AppCompatActivity {
     private void sendInstructionSolidPattern(int hue, int saturation, int value) {
         // ERROR CHECKING
 
-        char[] modifyInstruction = getResources().getString(R.string.instruction).toCharArray();
-        modifyInstruction[1] = (char) getResources().getInteger(R.integer.id_solid_pattern);
+        char[] modifyInstruction = Constants.INSTRUCTION.toCharArray();
+        modifyInstruction[1] = (char) Constants.ID_SOLID_PATTERN;
         modifyInstruction[2] = (char) hue;
         modifyInstruction[3] = (char) saturation;
         modifyInstruction[4] = (char) value;
@@ -309,8 +309,8 @@ public class MainActivity extends AppCompatActivity {
     private void sendInstructionOffPattern() {
         // ERROR CHECKING
 
-        char[] modifyInstruction = getResources().getString(R.string.instruction).toCharArray();
-        modifyInstruction[1] = (char) getResources().getInteger(R.integer.id_off_pattern);
+        char[] modifyInstruction = Constants.INSTRUCTION.toCharArray();
+        modifyInstruction[1] = (char) Constants.ID_OFF_PATTERN;
 
         threadConnected.write(String.valueOf(modifyInstruction));
     }
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
                 // Get a socket to connect with device, may vary on different Androids
                 tmp = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid);
             } catch(IOException e) {
-                Log.e(TAG, "Socket's create() method failed", e);
+                Log.e(Constants.TAG_MAIN_ACTIVITY, "Socket's create() method failed", e);
             }
             bluetoothSocket = tmp;
         }
@@ -372,10 +372,10 @@ public class MainActivity extends AppCompatActivity {
             } catch(IOException connectException) { // Unable to connect so close the socket/return
                 try {
                     bluetoothSocket.close();
-                    Log.e(TAG, "Cannot connect to device");
+                    Log.e(Constants.TAG_MAIN_ACTIVITY, "Cannot connect to device");
                     handler.obtainMessage(CONNECTING_STATUS, -1, -1).sendToTarget();
                 } catch(IOException closeException) {
-                    Log.e(TAG, "Could not close the client connecting thread socket",
+                    Log.e(Constants.TAG_MAIN_ACTIVITY, "Could not close the client connecting thread socket",
                             closeException);
                 }
                 return;
@@ -384,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
             // Connection attempt succeeded; new thread for work associated with the connection
             handler.obtainMessage(CONNECTING_STATUS, 1 , -1).sendToTarget();
             threadConnected = new ConnectedThread(bluetoothSocket);
-            Log.i(TAG, "Started connected thread for associated bluetooth work");
+            Log.i(Constants.TAG_MAIN_ACTIVITY, "Started connected thread for associated bluetooth work");
             threadConnected.run();
         }
 
@@ -393,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 bluetoothSocket.close();
             } catch(IOException e) {
-                Log.e(TAG, "Could not close the client socket", e);
+                Log.e(Constants.TAG_MAIN_ACTIVITY, "Could not close the client socket", e);
             }
         }
     }
@@ -426,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch(IOException e) {
-                Log.e(TAG, "Bluetooth connected thread input/output stream", e);
+                Log.e(Constants.TAG_MAIN_ACTIVITY, "Bluetooth connected thread input/output stream", e);
             }
 
             bluetoothInStream = tmpIn;
@@ -459,12 +459,12 @@ public class MainActivity extends AppCompatActivity {
                         // Ensure bytes from the input do not exceed the max limit constant set
                         bytes++;
                         if(bytes == MAX_INPUT_BYTES) {
-                            Log.e(TAG, "Input stream max bytes input error");
+                            Log.e(Constants.TAG_MAIN_ACTIVITY, "Input stream max bytes input error");
                             break;
                         }
                     }
                 } catch(IOException e) {
-                    Log.e(TAG, "Input stream listen exception", e);
+                    Log.e(Constants.TAG_MAIN_ACTIVITY, "Input stream listen exception", e);
                     break;
                 }
             }
@@ -481,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 bluetoothOutStream.write(bytes);
             } catch(IOException e) {
-                Log.e(TAG, "Unable to send message", e);
+                Log.e(Constants.TAG_MAIN_ACTIVITY, "Unable to send message", e);
             }
         }
 
@@ -492,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 bluetoothSocket.close();
             } catch(IOException e) {
-                Log.e(TAG,"Could not close the client connected thread socket", e);
+                Log.e(Constants.TAG_MAIN_ACTIVITY,"Could not close the client connected thread socket", e);
             }
         }
 
@@ -508,15 +508,15 @@ public class MainActivity extends AppCompatActivity {
         private void logExternalMessage(String received) {
             switch(received.charAt(0)) {
                 case 'E':
-                    Log.e(TAG, "Error message received:");
+                    Log.e(Constants.TAG_MAIN_ACTIVITY, "Error message received:");
                     Log.e(TAG_INPUT, received);
                     break;
                 case 'S':
-                    Log.i(TAG, "Status message received:");
+                    Log.i(Constants.TAG_MAIN_ACTIVITY, "Status message received:");
                     Log.i(TAG_INPUT, received);
                     break;
                 default:
-                    Log.e(TAG, "Unexpected format message received:");
+                    Log.e(Constants.TAG_MAIN_ACTIVITY, "Unexpected format message received:");
                     Log.w(TAG_INPUT, received);
                     break;
             }

@@ -6,4 +6,6 @@
     <string name="hnt_hsv_enter_saturation">Field to enter the HSV saturation</string>
     <string name="hnt_hsv_enter_value">Field to enter the HSV value</string>
     <string name="lbl_btn_off">Turn Off</string>
+    <string name="bluetooth_notification_title">LEDs Controller Title</string>
+    <string name="bluetooth_notification_message">LEDs Controller message</string>
 </resources>

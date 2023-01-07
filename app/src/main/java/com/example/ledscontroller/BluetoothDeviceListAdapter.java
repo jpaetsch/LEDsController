@@ -42,7 +42,7 @@ public class BluetoothDeviceListAdapter extends RecyclerView.Adapter<RecyclerVie
     @NonNull
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.device_info_layout, parent, false);
+                R.layout.select_bluetooth_device_item, parent, false);
         return new ViewHolder(v);
     }
 

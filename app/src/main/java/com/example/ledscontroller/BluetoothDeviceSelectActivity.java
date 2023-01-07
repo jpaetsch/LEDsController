@@ -19,8 +19,7 @@ import java.util.Set;
 
 
 /**
- * This class is an activity for selecting a bluetooth device to pair to and is actually the
- * beginning of the entire app on startup
+ * This class is an activity for selecting a bluetooth device to pair to
  **/
 public class BluetoothDeviceSelectActivity extends AppCompatActivity {
 

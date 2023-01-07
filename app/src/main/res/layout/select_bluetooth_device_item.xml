@@ -6,7 +6,7 @@
     android:layout_height="wrap_content" >
 
     <LinearLayout
-        android:id="@+id/linearLayoutDeviceInfo"
+        android:id="@+id/lly_device_select_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -18,16 +18,17 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textViewDeviceName"
+            android:id="@+id/tv_device_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textViewDeviceAddress"
+            android:id="@+id/tv_device_address"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <View
@@ -40,6 +41,6 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutDeviceInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/lly_device_select_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

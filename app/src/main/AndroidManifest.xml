@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ledscontroller">
-
-    <!-- Bluetooth access permissions for the app -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Bluetooth access permissions and foreground service permission for the app -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -15,6 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LEDsController">
+        <activity
+            android:name=".SelectBluetoothDeviceActivity"
+            android:exported="false" />
+
+        <service
+            android:name=".LEDsBluetoothService"
+            android:enabled="true" />
+
         <activity android:name=".BluetoothDeviceSelectActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
