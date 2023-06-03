@@ -1,7 +1,6 @@
 # *DEPRECATED*
 * Final commit backtracked to the last working version in conjunction with the LEDsReceiver repository.
-* See the new LEDsProject repository for the new project including improved hardware, architecture design, and up-to-date work
-
+* Working on a new, private project repository; includes improved hardware, architecture design, and tech stack
 
 # LED Controller - Bluetooth App -> Arduino-controlled LED lightstrip
 
